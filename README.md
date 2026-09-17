@@ -1,1 +1,1 @@
-# Žaisti[https://ugnius-p.github.io/bulves-kaina/]
+# [Žaisti](https://ugnius-p.github.io/bulves-kaina/)
