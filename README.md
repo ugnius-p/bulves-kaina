@@ -30,6 +30,6 @@ Susimoki visus mokesčius ir likusius pinigus investuoji.
 ### Pabaiga
 Žaidimas baigiasi kai bankrutuoji arba kai miršti.
 
-![Strukturine schema](structural_class_diagram.png)
-![Elgsenos sekos diagrama](behavioral_sequence_diagram.png)
-![Elgsenos busenos diagrama](behavioral_state_diagram.png)
+![Strukturine schema](.diagrams/structural_class_diagram.png)
+![Elgsenos sekos diagrama](.diagrams/behavioral_sequence_diagram.png)
+![Elgsenos busenos diagrama](.diagrams/behavioral_state_diagram.png)
