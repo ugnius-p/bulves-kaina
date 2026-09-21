@@ -40,6 +40,7 @@ class Expense{
 
 class GameData extends AbstractSingleton{
     constructor() {
+        super()
         this.age = 20;
         this.money = 3000;
         this.potatoes = 0;
@@ -49,12 +50,31 @@ class GameData extends AbstractSingleton{
     }
 }
 
-class Sowing{
-    constructor() {
-        this.gameData = GameData();
-    }
+class StatusBar{
+        static gameData = GameData.getInstance();
 
-    sow(potatoesToSow) {
+static draw() {
+        const statusBar = document.getElementById('statusBar');
+        statusBar.innerHTML = "";
+        const ul = document.createElement("div");
+
+        let age = document.createElement("li");
+        age.innerText = `Amžius: ${this.gameData.age}`;
+
+        let money = document.createElement("li");
+        money.innerText = `Pinigai: ${this.gameData.money}`;
+    
+        ul.appendChild(age);
+        ul.appendChild(money);
+        statusBar.appendChild(ul);
+    }
+}
+
+class Sowing{
+
+    static gameData = GameData.getInstance();
+
+    static sow(potatoesToSow) {
         if (potatoesToSow > this.gameData.potatoSeeds) {
             throw new Error(`Can't plant more potatoes, than there are potatoe seeds. Trying to plant: ${potatoesToSow}, have: ${this.gameData.potatoSeeds}`);
         } else if (potatoesToSow < 0) {
@@ -64,29 +84,72 @@ class Sowing{
             this.gameData.potatoesPlanted = potatoesToSow;
         }
     }
+
+    static draw() {
+        StatusBar.draw()
+
+        const appContainer = document.getElementById('app');
+        appContainer.innerHTML = '';
+        const card = document.createElement('div');
+        card.className = 'card';
+
+        const seedsInfo = document.createElement('p');
+        seedsInfo.textContent = `Available Potato Seeds: ${this.gameData.potatoSeeds}`;        
+        const plantedInfo = document.createElement('p');
+        plantedInfo.textContent = `Potatoes Planted: ${this.gameData.potatoesPlanted}`;
+
+        const input = document.createElement('input');
+        input.type = 'number';
+        input.value = this.gameData.potatoSeeds;
+        input.min = 0;
+        input.max = this.gameData.potatoSeeds;
+
+        const button = document.createElement('button');
+        button.textContent = 'Sow Potatoes';
+
+        const errorMsg = document.createElement('div');
+        errorMsg.className = 'error';
+
+        button.addEventListener('click', () => {
+            errorMsg.textContent = '';
+            try {
+                const val = parseInt(input.value, 10) || 0;
+                this.sow(val);
+                this.draw();
+            } catch (err) {
+                errorMsg.textContent = err.message;
+            }
+        });
+
+        card.appendChild(seedsInfo);
+        card.appendChild(plantedInfo);
+        card.appendChild(input);
+        card.appendChild(document.createElement('br'));
+        card.appendChild(document.createElement('br'));
+        card.appendChild(button);
+        card.appendChild(errorMsg);
+
+        appContainer.appendChild(card);
+    }
 }
 
 class Harvesting{
-    constructor() {
-        this.gameData = GameData()
-    }
-    harvest() {
+    static gameData = GameData.getInstance();
+    static harvest() {
         this.gameData.potatoes = this.gameData.potatoesPlanted * this.harvestMultiplier();
         this.potatoesPlanted = 0;
     }
 }
 
 class Selling{
-    constructor() {
-        this.gameData = GameData();
-    }
+    static gameData = GameData.getInstance();
 
-    potatoeSellRatio(price) {
+    static potatoeSellRatio(price) {
         //Add potato demand logic
         return 1;
     }
 
-    sell(price) {
+    static sell(price) {
         potatoesSold = this.gameData.potatoes*this.potatoeSellRatio(price);
         this.gameData.potatoes -= potatoesSold;
         this.gameData.money += potatoesSold*price;
@@ -94,11 +157,9 @@ class Selling{
 }
 
 class Accounting{
-    constructor() {
-        this.gameData = GameData();
-    }
+    static gameData = GameData.getInstance();
 
-    expensesList() {
+    static expensesList() {
         let list = [];
         this.gameData.expenses.forEach(expense => {
             if (expense.pay()[1] < 0) {
@@ -115,16 +176,16 @@ class Accounting{
 }
 
 class Preparation{
-    constructor() {
-        this.gameData = GameData();
-    }
+    static gameData = GameData.getInstance();
 
-    potatoSeedPrice() {
+    static potatoSeedPrice() {
         return 0.4;
     }
 
-    buySeeds(money) {
+    static buySeeds(money) {
         this.gameData.money -= money;
         this.gameData.potatoSeeds = money / potatoSeedPrice();
     }
 }
+
+Sowing.draw()
